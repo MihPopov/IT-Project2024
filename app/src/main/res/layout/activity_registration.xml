@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".activities.RegistrationActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/roboto"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:text="Регистрация" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
+        android:text="Заполните необходимые поля, чтобы зарегистрироваться" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:text="Фамилия и имя:" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registrationSurnameAndName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:textSize="14sp"
+            android:paddingTop="10dp"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:text="Адрес электронной почты:" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registrationEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:textSize="14sp"
+            android:paddingTop="10dp"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:text="Пароль:" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registrationPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:textSize="14sp"
+            android:paddingTop="10dp"
+            android:inputType="textPassword"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:text="Подтвердите пароль:" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registrationPasswordConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:textSize="14sp"
+            android:paddingTop="10dp"
+            android:inputType="textPassword"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/roboto" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/privacyPolicyCheckBox"
+            android:layout_width="30dp"
+            android:layout_height="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:text="Я согласен на обработку персональных данных в" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="соответствии с "
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:onClick="policyPrivacyOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Политикой конфиденциальности"
+            android:textColor="@color/yellow"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_registration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        app:cornerRadius="4dp"
+        android:backgroundTint="@color/blue2"
+        android:textSize="16sp"
+        android:text="Зарегистрироваться" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/roboto"
+            android:text="У вас уже есть аккаунт?"
+            android:textColor="@color/gray"
+            android:textSize="16sp" />
+
+        <TextView
+            android:onClick="LoginFromRegistration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/roboto"
+            android:text="Авторизуйтесь"
+            android:textColor="@color/blue"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>
