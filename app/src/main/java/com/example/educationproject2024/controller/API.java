@@ -1,5 +1,6 @@
 package com.example.educationproject2024.controller;
 
+import com.example.educationproject2024.data.Course;
 import com.example.educationproject2024.data.User;
 
 import java.util.HashMap;
@@ -19,4 +20,10 @@ public interface API {
 
     @GET("accounts")
     Call<List<User>> getAccount(@Header("apikey") String apikey, @Query("select") String select);
+
+    @POST("courses")
+    Call<Void> createCourse(@Header("apikey") String apikey, @Body HashMap<String, String> parameters);
+
+    @GET("courses")
+    Call<List<Course>> getCourses(@Header("apikey") String apikey, @Query("select") String select);
 }

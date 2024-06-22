@@ -16,6 +16,15 @@
         android:theme="@style/Theme.EducationProject2024"
         tools:targetApi="31">
         <activity
+            android:name=".activities.CourseCompleteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CourseCreationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.HomeActivity"
             android:exported="false" />
         <activity

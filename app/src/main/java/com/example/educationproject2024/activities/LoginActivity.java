@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Заполните все поля!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Call<List<User>> call = api.getAccount(APIKEY, "*");
+                    Call<List<User>> call = api.getAccount(APIKEY, "full_name,email,password");
                     call.enqueue(new Callback<List<User>>() {
                         @Override
                         public void onResponse(Call<List<User>> call, Response<List<User>> response) {
@@ -67,7 +67,9 @@ public class LoginActivity extends AppCompatActivity {
                             for (int i = 0; i < data.toArray().length; i++) {
                                 if (data.get(i).getEmail().equals(e) && data.get(i).getPassword().equals(p)) {
                                     isFind = true;
-                                    Utils.user = data.get(i);
+                                    Utils.user.setFullName(data.get(i).getFullName());
+                                    Utils.user.setEmail(data.get(i).getEmail());
+                                    Utils.user.setPassword(data.get(i).getPassword());
                                     break;
                                 }
                             }

@@ -1,9 +1,15 @@
 package com.example.educationproject2024.data;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
-    private String fullName;
-    private String email;
-    private String password;
+
+    @SerializedName("full_name")
+    public String fullName;
+    @SerializedName("email")
+    public String email;
+    @SerializedName("password")
+    public String password;
 
     public User(String fullName, String email, String password) {
         this.fullName = fullName;
@@ -23,12 +29,12 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {

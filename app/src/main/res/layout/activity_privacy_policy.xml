@@ -7,9 +7,9 @@
     android:background="@color/white"
     tools:context=".activities.PrivacyPolicyActivity">
 
-    <com.github.barteksc.pdfviewer.PDFView
-        android:id="@+id/idPDFView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+<!--    <com.github.barteksc.pdfviewer.PDFView-->
+<!--        android:id="@+id/idPDFView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
 
 </RelativeLayout>
