@@ -108,17 +108,12 @@
                 android:textColor="@color/gray"
                 android:textSize="18sp" />
 
-            <EditText
-                android:id="@+id/editTextCourseSubject"
+            <Spinner
+                android:id="@+id/spinnerCourseSubject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="17dp"
-                android:layout_marginTop="10dp"
-                android:ems="12"
-                android:fontFamily="@font/roboto"
-                android:hint="Дисциплина"
-                android:inputType="text"
-                android:textColor="@color/gray" />
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

@@ -32,7 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CourseCreationActivity extends AppCompatActivity {
 
-    EditText courseName, courseDescription, courseExercisesCount, courseSubject;
+    EditText courseName, courseDescription, courseExercisesCount;
+    Spinner courseSubject;
     Button nextStep, courseCreate;
     LinearLayout s2;
 
@@ -47,9 +48,13 @@ public class CourseCreationActivity extends AppCompatActivity {
         courseName = findViewById(R.id.editTextCourseName);
         courseDescription = findViewById(R.id.editTextCourseDescription);
         courseExercisesCount = findViewById(R.id.editTextCourseExercisesCount);
-        courseSubject = findViewById(R.id.editTextCourseSubject);
+        courseSubject = findViewById(R.id.spinnerCourseSubject);
         nextStep = findViewById(R.id.button_next1);
         courseCreate = findViewById(R.id.button_course_create);
+
+        String[] items = new String[]{"Математика", "История", "Информатика", "Химия"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        courseSubject.setAdapter(adapter);
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -61,11 +66,9 @@ public class CourseCreationActivity extends AppCompatActivity {
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                courseCreate.setVisibility(View.VISIBLE);
                 String name = courseName.getText().toString();
                 String description = courseDescription.getText().toString();
-                String subject = courseSubject.getText().toString();
-                if (name.equals("") || description.equals("") || subject.equals("") || courseExercisesCount.getText().toString().equals("")) {
+                if (name.equals("") || description.equals("") || courseExercisesCount.getText().toString().equals("")) {
                     Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -164,6 +167,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                         });
                         s2.addView(keyPar);
                     }
+                    courseCreate.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -173,9 +177,9 @@ public class CourseCreationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = courseName.getText().toString();
                 String description = courseDescription.getText().toString();
-                String subject = courseSubject.getText().toString();
+                String subject = courseSubject.getSelectedItem().toString();
                 ArrayList<Object> exercises = new ArrayList<>();
-                if (name.equals("") || description.equals("") || subject.equals("") || courseExercisesCount.getText().toString().equals("")) {
+                if (name.equals("") || description.equals("") || courseExercisesCount.getText().toString().equals("")) {
                     Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
                 }
                 else {
