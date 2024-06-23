@@ -180,6 +180,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                 }
                 else {
                     int exercisesCount = Integer.parseInt(courseExercisesCount.getText().toString());
+                    boolean isAlright = true;
                     for (int i = 0; i < exercisesCount; i++) {
                         LinearLayout exercise = (LinearLayout) s2.getChildAt(i);
                         Spinner exerciseTypeSpinner = exercise.findViewById(R.id.spinner_exercise_type);
@@ -200,12 +201,14 @@ public class CourseCreationActivity extends AppCompatActivity {
                             String s = ((EditText) exerciseSubtitleAndTextLayout.getChildAt(j).findViewById(R.id.editTextTheoryText)).getText().toString();
                             if (s.equals("")) {
                                 Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
+                                isAlright = false;
                                 break;
                             }
                             else {
                                 exerciseSubtitlesAndText.add(s);
                             }
                         }
+                        if (!isAlright) break;
                         exerciseKeyPar.add(exerciseSubtitlesAndText);
                         if (exerciseType.equals("Практика")) {
                             Spinner exerciseAnswerTypeSpinner = exercise.findViewById(R.id.spinner_exercise_answer_type);
@@ -217,39 +220,45 @@ public class CourseCreationActivity extends AppCompatActivity {
                                     String s = ((EditText) answerVariants.getChildAt(k).findViewById(R.id.editTextAnswer)).getText().toString();
                                     if (s.equals("")) {
                                         Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
+                                        isAlright = false;
                                         break;
                                     }
                                     answerVariantsList.add(s);
                                 }
                                 exerciseKeyPar.add(answerVariantsList);
+                                if (!isAlright) break;
                             }
                             String rightAnswer = ((EditText) exercise.findViewById(R.id.editTextRightAnswer)).getText().toString();
                             if (rightAnswer.equals("")) {
                                 Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
+                                isAlright = false;
                                 break;
                             }
+                            if (!isAlright) break;
                             exerciseKeyPar.add(rightAnswer);
                         }
                         exercises.add(exerciseKeyPar);
                     }
-                    HashMap<String, String> parameters = new HashMap<>();
-                    parameters.put("name", name);
-                    parameters.put("description", description);
-                    parameters.put("subject", subject);
-                    parameters.put("exercises_count", Integer.toString(exercisesCount));
-                    parameters.put("exercises", exercises + "");
-                    Call<Void> call = api.createCourse(APIKEY, parameters);
-                    call.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            startActivity(new Intent(CourseCreationActivity.this, ProfileActivity.class));
-                        }
+                    if (isAlright) {
+                        HashMap<String, String> parameters = new HashMap<>();
+                        parameters.put("name", name);
+                        parameters.put("description", description);
+                        parameters.put("subject", subject);
+                        parameters.put("exercises_count", Integer.toString(exercisesCount));
+                        parameters.put("exercises", exercises + "");
+                        Call<Void> call = api.createCourse(APIKEY, parameters);
+                        call.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                startActivity(new Intent(CourseCreationActivity.this, ProfileActivity.class));
+                            }
 
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
             }
         });
