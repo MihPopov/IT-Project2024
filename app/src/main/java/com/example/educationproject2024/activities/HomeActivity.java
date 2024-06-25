@@ -49,44 +49,44 @@ public class HomeActivity extends AppCompatActivity {
                 .build();
         API api = retrofit.create(API.class);
 
-        Call<List<Course>> call = api.getCourses(APIKEY, "*");
-        call.enqueue(new Callback<List<Course>>() {
-            @Override
-            public void onResponse(Call<List<Course>> call, Response<List<Course>> response) {
-                List<Course> allCourses = response.body();
-                for (int i = 0; i < allCourses.size(); i++) {
-                    Course course = allCourses.get(i);
-                    CardView coursePanel = (CardView) getLayoutInflater().inflate(R.layout.course_panel, null);
-
-                    TextView tv = coursePanel.findViewById(R.id.course_name);
-                    tv.setText(course.getName());
-
-                    tv = coursePanel.findViewById(R.id.course_description);
-                    tv.setText(course.getDescription());
-
-                    tv = coursePanel.findViewById(R.id.course_exercises);
-                    tv.setText(course.getExercisesCount());
-
-                    coursePanel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(HomeActivity.this, CourseCompleteActivity.class);
-                            intent.putExtra("course_name", course.getName());
-                            intent.putExtra("course_exercises_count", course.getExercisesCount());
-                            intent.putExtra("course_exercises", course.getExercises());
-                            startActivity(intent);
-                        }
-                    });
-
-                    coursesList.addView(coursePanel);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Course>> call, Throwable t) {
-                Toast.makeText(HomeActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        Call<List<Course>> call = api.getCourses(APIKEY, "*");
+//        call.enqueue(new Callback<List<Course>>() {
+//            @Override
+//            public void onResponse(Call<List<Course>> call, Response<List<Course>> response) {
+//                List<Course> allCourses = response.body();
+//                for (int i = 0; i < allCourses.size(); i++) {
+//                    Course course = allCourses.get(i);
+//                    CardView coursePanel = (CardView) getLayoutInflater().inflate(R.layout.course_panel, null);
+//
+//                    TextView tv = coursePanel.findViewById(R.id.course_name);
+//                    tv.setText(course.getName());
+//
+//                    tv = coursePanel.findViewById(R.id.course_description);
+//                    tv.setText(course.getDescription());
+//
+//                    tv = coursePanel.findViewById(R.id.course_exercises);
+//                    tv.setText(course.getExercises_count());
+//
+//                    coursePanel.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent(HomeActivity.this, CourseCompleteActivity.class);
+//                            intent.putExtra("course_name", course.getName());
+//                            intent.putExtra("course_exercises_count", course.getExercises_count());
+//                            intent.putExtra("course_exercises", course.getExercises());
+//                            startActivity(intent);
+//                        }
+//                    });
+//
+//                    coursesList.addView(coursePanel);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Course>> call, Throwable t) {
+//                Toast.makeText(HomeActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     public void ProfileFromHome(View view) {

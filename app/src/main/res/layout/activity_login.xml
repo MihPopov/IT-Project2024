@@ -44,7 +44,8 @@
             android:textSize="14sp"
             android:paddingTop="10dp"
             android:textColor="@color/gray"
-            android:fontFamily="@font/roboto" />
+            android:fontFamily="@font/roboto"
+            android:text="mihail.popov.2008@gmail.com"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,7 +76,8 @@
             android:paddingTop="10dp"
             android:inputType="textPassword"
             android:textColor="@color/gray"
-            android:fontFamily="@font/roboto" />
+            android:fontFamily="@font/roboto"
+            android:text="123123"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -2,25 +2,17 @@ package com.example.educationproject2024.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Course {
 
-    @SerializedName("name")
     public String name;
-    @SerializedName("description")
     public String description;
-    @SerializedName("subject")
     public String subject;
-    @SerializedName("exercises_count")
     public String exercisesCount;
-    @SerializedName("exercises")
-    public String exercises;
+    public List<Exercise> exercises;
 
-    public Course(String name, String description, String subject, String exercisesCount, String exercises) {
-        this.name = name;
-        this.description = description;
-        this.subject = subject;
-        this.exercisesCount = exercisesCount;
-        this.exercises = exercises;
+    public Course() {
     }
 
     public String getName() {
@@ -55,11 +47,11 @@ public class Course {
         this.exercisesCount = exercisesCount;
     }
 
-    public String getExercises() {
+    public List<Exercise> getExercises() {
         return exercises;
     }
 
-    public void setExercises(String exercises) {
+    public void setExercises(List<Exercise> exercises) {
         this.exercises = exercises;
     }
 }

@@ -5,6 +5,7 @@ import static com.example.educationproject2024.Utils.BASE_URL;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,10 +20,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.educationproject2024.R;
 import com.example.educationproject2024.controller.API;
+import com.example.educationproject2024.data.CourseAdditional;
+import com.example.educationproject2024.data.Exercise;
+import com.example.educationproject2024.data.SubtitleAndText;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,13 +81,17 @@ public class CourseCreationActivity extends AppCompatActivity {
                     for (int i = 1; i <= exercisesCount; i++) {
                         LinearLayout keyPar = (LinearLayout) getLayoutInflater().inflate(R.layout.course_exercise, null);
                         LinearLayout answerType = keyPar.findViewById(R.id.exercise_answer_type);
-                        LinearLayout rightAnswer = keyPar.findViewById(R.id.right_answer);
+                        LinearLayout rightAnswers = keyPar.findViewById(R.id.right_answers);
                         LinearLayout answerVariantsList = keyPar.findViewById(R.id.answer_variants);
                         TextView exerciseNum = keyPar.findViewById(R.id.exercise_num);
                         exerciseNum.setText(i + "");
 
-                        LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
-                        answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
+                        for (int j = 1; j < 3; j++) {
+                            LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
+                            answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
+                            TextView answerNum = answerVariant.findViewById(R.id.answer_num);
+                            answerNum.setText(j + "");
+                        }
 
                         MaterialButton addAnswerButton = keyPar.findViewById(R.id.button_add_new_var);
                         MaterialButton removeAnswerButton = keyPar.findViewById(R.id.button_remove_var);
@@ -99,7 +107,28 @@ public class CourseCreationActivity extends AppCompatActivity {
                         removeAnswerButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (answerVariantsList.getChildCount() > 2) answerVariantsList.removeViewAt(answerVariantsList.getChildCount() - 2);
+                                if (answerVariantsList.getChildCount() > 3) answerVariantsList.removeViewAt(answerVariantsList.getChildCount() - 2);
+                            }
+                        });
+
+                        LinearLayout rightAnswer = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
+                        rightAnswers.addView(rightAnswer, rightAnswers.getChildCount() - 1);
+
+                        MaterialButton addRightAnswerButton = keyPar.findViewById(R.id.button_add_new_right_var);
+                        MaterialButton removeRightAnswerButton = keyPar.findViewById(R.id.button_remove_right_var);
+                        addRightAnswerButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                LinearLayout rightAnswerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
+                                rightAnswers.addView(rightAnswerVariant, rightAnswers.getChildCount() - 1);
+                                TextView rightAnswerNum = rightAnswerVariant.findViewById(R.id.right_answer_num);
+                                rightAnswerNum.setText(rightAnswers.getChildCount() - 1 + "");
+                            }
+                        });
+                        removeRightAnswerButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (rightAnswers.getChildCount() > 2) rightAnswers.removeViewAt(rightAnswers.getChildCount() - 2);
                             }
                         });
 
@@ -116,7 +145,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 if (parent.getItemAtPosition(position).equals("Практика")) {
                                     answerType.setVisibility(View.VISIBLE);
-                                    rightAnswer.setVisibility(View.VISIBLE);
+                                    rightAnswers.setVisibility(View.VISIBLE);
                                     dropAnswerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                         @Override
                                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -137,7 +166,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                                 else {
                                     answerType.setVisibility(View.GONE);
                                     answerVariantsList.setVisibility(View.GONE);
-                                    rightAnswer.setVisibility(View.GONE);
+                                    rightAnswers.setVisibility(View.GONE);
                                 }
                             }
 
@@ -178,7 +207,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                 String name = courseName.getText().toString();
                 String description = courseDescription.getText().toString();
                 String subject = courseSubject.getSelectedItem().toString();
-                ArrayList<Object> exercises = new ArrayList<>();
+                List<Exercise> exercises = new ArrayList<>();
                 if (name.equals("") || description.equals("") || courseExercisesCount.getText().toString().equals("")) {
                     Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
                 }
@@ -186,22 +215,23 @@ public class CourseCreationActivity extends AppCompatActivity {
                     int exercisesCount = Integer.parseInt(courseExercisesCount.getText().toString());
                     boolean isAlright = true;
                     for (int i = 0; i < exercisesCount; i++) {
-                        LinearLayout exercise = (LinearLayout) s2.getChildAt(i);
-                        Spinner exerciseTypeSpinner = exercise.findViewById(R.id.spinner_exercise_type);
+                        Exercise exercise = new Exercise();
+                        LinearLayout exercisesLayout = (LinearLayout) s2.getChildAt(i);
+                        Spinner exerciseTypeSpinner = exercisesLayout.findViewById(R.id.spinner_exercise_type);
                         String exerciseType = exerciseTypeSpinner.getSelectedItem().toString();
-                        ArrayList<Object> exerciseKeyPar = new ArrayList<>();
-                        exerciseKeyPar.add(exerciseType);
+                        exercise.setExerciseType(exerciseType);
                         if (exerciseType.equals("Практика")) {
-                            Spinner exerciseAnswerTypeSpinner = exercise.findViewById(R.id.spinner_exercise_answer_type);
+                            Spinner exerciseAnswerTypeSpinner = exercisesLayout.findViewById(R.id.spinner_exercise_answer_type);
                             String exerciseAnswerType = exerciseAnswerTypeSpinner.getSelectedItem().toString();
-                            exerciseKeyPar.add(exerciseAnswerType);
+                            exercise.setExerciseAnswerType(exerciseAnswerType);
                         }
-                        String exerciseTitle = ((EditText) exercise.findViewById(R.id.editTextTitle)).getText().toString();
-                        exerciseKeyPar.add(exerciseTitle);
-                        LinearLayout exerciseSubtitleAndTextLayout = exercise.findViewById(R.id.subtitle_and_text_list);
-                        ArrayList<Object> exerciseSubtitlesAndText = new ArrayList<>();
+                        String exerciseTitle = ((EditText) exercisesLayout.findViewById(R.id.editTextTitle)).getText().toString();
+                        exercise.setExerciseTitle(exerciseTitle);
+                        LinearLayout exerciseSubtitleAndTextLayout = exercisesLayout.findViewById(R.id.subtitle_and_text_list);
+                        List<SubtitleAndText> exerciseSubtitlesAndText = new ArrayList<>();
                         for (int j = 0; j < exerciseSubtitleAndTextLayout.getChildCount() - 1; j++) {
-                            exerciseSubtitlesAndText.add(((EditText) exerciseSubtitleAndTextLayout.getChildAt(j).findViewById(R.id.editTextSubtitle)).getText().toString());
+                            SubtitleAndText subtitleAndText = new SubtitleAndText();
+                            subtitleAndText.setExerciseSubtitle(((EditText) exerciseSubtitleAndTextLayout.getChildAt(j).findViewById(R.id.editTextSubtitle)).getText().toString());
                             String s = ((EditText) exerciseSubtitleAndTextLayout.getChildAt(j).findViewById(R.id.editTextTheoryText)).getText().toString();
                             if (s.equals("")) {
                                 Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
@@ -209,17 +239,18 @@ public class CourseCreationActivity extends AppCompatActivity {
                                 break;
                             }
                             else {
-                                exerciseSubtitlesAndText.add(s);
+                                subtitleAndText.setExerciseText(s);
+                                exerciseSubtitlesAndText.add(subtitleAndText);
                             }
                         }
                         if (!isAlright) break;
-                        exerciseKeyPar.add(exerciseSubtitlesAndText);
+                        exercise.setExerciseSubtitleAndText(exerciseSubtitlesAndText);
                         if (exerciseType.equals("Практика")) {
-                            Spinner exerciseAnswerTypeSpinner = exercise.findViewById(R.id.spinner_exercise_answer_type);
+                            Spinner exerciseAnswerTypeSpinner = exercisesLayout.findViewById(R.id.spinner_exercise_answer_type);
                             String exerciseAnswerType = exerciseAnswerTypeSpinner.getSelectedItem().toString();
                             if (exerciseAnswerType.equals("Выбор ответа")) {
-                                LinearLayout answerVariants = exercise.findViewById(R.id.answer_variants);
-                                ArrayList<Object> answerVariantsList = new ArrayList<>();
+                                LinearLayout answerVariants = exercisesLayout.findViewById(R.id.answer_variants);
+                                List<String> answerVariantsList = new ArrayList<>();
                                 for (int k = 0; k < answerVariants.getChildCount() - 1; k++) {
                                     String s = ((EditText) answerVariants.getChildAt(k).findViewById(R.id.editTextAnswer)).getText().toString();
                                     if (s.equals("")) {
@@ -229,39 +260,72 @@ public class CourseCreationActivity extends AppCompatActivity {
                                     }
                                     answerVariantsList.add(s);
                                 }
-                                exerciseKeyPar.add(answerVariantsList);
+                                exercise.setExerciseAnswerVariants(answerVariantsList);
                                 if (!isAlright) break;
                             }
-                            String rightAnswer = ((EditText) exercise.findViewById(R.id.editTextRightAnswer)).getText().toString();
-                            if (rightAnswer.equals("")) {
-                                Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
-                                isAlright = false;
-                                break;
+                            LinearLayout rightAnswers = exercisesLayout.findViewById(R.id.right_answers);
+                            List<String> rightAnswersList = new ArrayList<>();
+                            for (int k = 0; k < rightAnswers.getChildCount() - 1; k++) {
+                                String s = ((EditText) rightAnswers.getChildAt(k).findViewById(R.id.editTextRightAnswer)).getText().toString();
+                                if (s.equals("")) {
+                                    Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
+                                    isAlright = false;
+                                    break;
+                                }
+                                rightAnswersList.add(s);
                             }
+                            exercise.setExerciseAnswerVariants(rightAnswersList);
                             if (!isAlright) break;
-                            exerciseKeyPar.add(rightAnswer);
                         }
-                        exercises.add(exerciseKeyPar);
+                        exercises.add(exercise);
                     }
                     if (isAlright) {
-                        HashMap<String, String> parameters = new HashMap<>();
-                        parameters.put("name", name);
-                        parameters.put("description", description);
-                        parameters.put("subject", subject);
-                        parameters.put("exercises_count", Integer.toString(exercisesCount));
-                        parameters.put("exercises", exercises + "");
-                        Call<Void> call = api.createCourse(APIKEY, parameters);
-                        call.enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                startActivity(new Intent(CourseCreationActivity.this, ProfileActivity.class));
+                        List<CourseAdditional> courseToSend = new ArrayList<>();
+                        for (int i = 0; i < exercisesCount; i++) {
+                            CourseAdditional courseAdditional = new CourseAdditional();
+                            courseAdditional.setName(name);
+                            courseAdditional.setDescription(description);
+                            courseAdditional.setSubject(subject);
+                            courseAdditional.setExercises_count(Integer.toString(exercisesCount));
+                            courseAdditional.setExercise_type(exercises.get(i).getExerciseType());
+                            courseAdditional.setExercise_answer_type(exercises.get(i).getExerciseAnswerType());
+                            courseAdditional.setExercise_title(exercises.get(i).getExerciseTitle());
+                            List<SubtitleAndText> subtitleAndTextList = exercises.get(i).getExerciseSubtitleAndText();
+                            List<String> exerciseAnswerVariants = exercises.get(i).getExerciseAnswerVariants();
+                            List<String> exerciseRightAnswers = exercises.get(i).getExerciseRightAnswers();
+                            if (exercises.get(i).getExerciseType().equals("Практика")) {
+                                for (int j = 0; j < Math.max(Math.max(subtitleAndTextList.size(), exerciseAnswerVariants.size()), exerciseRightAnswers.size()); j++) {
+                                    if (j < subtitleAndTextList.size()) {
+                                        courseAdditional.setExercise_subtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
+                                        courseAdditional.setExercise_text(subtitleAndTextList.get(j).getExerciseText());
+                                    }
+                                    if (j < exerciseAnswerVariants.size()) courseAdditional.setExercise_answer_variant(exerciseAnswerVariants.get(j));
+                                    if (j < exerciseRightAnswers.size()) courseAdditional.setExercise_right_answer(exerciseRightAnswers.get(j));
+                                    courseToSend.add(courseAdditional);
+                                }
                             }
+                            else {
+                                for (int j = 0; j < subtitleAndTextList.size(); j++) {
+                                    courseAdditional.setExercise_subtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
+                                    courseAdditional.setExercise_text(subtitleAndTextList.get(j).getExerciseText());
+                                    courseToSend.add(courseAdditional);
+                                    Log.d("777", courseToSend.get(j).toString());
+                                }
+                            }
+                            Call<Void> call = api.createCourse(APIKEY, courseToSend);
+                            call.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    courseToSend.clear();
+                                }
 
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        startActivity(new Intent(CourseCreationActivity.this, ProfileActivity.class));
                     }
                 }
             }
