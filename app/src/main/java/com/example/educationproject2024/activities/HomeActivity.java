@@ -65,14 +65,14 @@ public class HomeActivity extends AppCompatActivity {
 //                    tv.setText(course.getDescription());
 //
 //                    tv = coursePanel.findViewById(R.id.course_exercises);
-//                    tv.setText(course.getExercises_count());
+//                    tv.setText(course.getExercisesCount());
 //
 //                    coursePanel.setOnClickListener(new View.OnClickListener() {
 //                        @Override
 //                        public void onClick(View v) {
 //                            Intent intent = new Intent(HomeActivity.this, CourseCompleteActivity.class);
 //                            intent.putExtra("course_name", course.getName());
-//                            intent.putExtra("course_exercises_count", course.getExercises_count());
+//                            intent.putExtra("course_exercises_count", course.getExercisesCount());
 //                            intent.putExtra("course_exercises", course.getExercises());
 //                            startActivity(intent);
 //                        }

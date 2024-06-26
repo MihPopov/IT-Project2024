@@ -1,8 +1,10 @@
 package com.example.educationproject2024.data;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
-public class CourseAdditional {
+public class CourseAdditional implements Cloneable {
     @SerializedName("name")
     public String name;
     @SerializedName("description")
@@ -10,21 +12,21 @@ public class CourseAdditional {
     @SerializedName("subject")
     public String subject;
     @SerializedName("exercises_count")
-    public String exercises_count;
+    public String exercisesCount;
     @SerializedName("exercise_type")
-    public String exercise_type;
+    public String exerciseType;
     @SerializedName("exercise_answer_type")
-    public String exercise_answer_type;
+    public String exerciseAnswerType;
     @SerializedName("exercise_title")
-    public String exercise_title;
+    public String exerciseTitle;
     @SerializedName("exercise_subtitle")
-    public String exercise_subtitle;
+    public String exerciseSubtitle;
     @SerializedName("exercise_text")
-    public String exercise_text;
+    public String exerciseText;
     @SerializedName("exercise_answer_variant")
-    public String exercise_answer_variant;
+    public String exerciseAnswerVariant;
     @SerializedName("exercise_right_answer")
-    public String exercise_right_answer;
+    public String exerciseRightAnswer;
 
     public CourseAdditional() {
     }
@@ -53,68 +55,68 @@ public class CourseAdditional {
         this.subject = subject;
     }
 
-    public String getExercises_count() {
-        return exercises_count;
+    public String getExercisesCount() {
+        return exercisesCount;
     }
 
-    public void setExercises_count(String exercises_count) {
-        this.exercises_count = exercises_count;
+    public void setExercisesCount(String exercisesCount) {
+        this.exercisesCount = exercisesCount;
     }
 
-    public String getExercise_type() {
-        return exercise_type;
+    public String getExerciseType() {
+        return exerciseType;
     }
 
-    public void setExercise_type(String exercise_type) {
-        this.exercise_type = exercise_type;
+    public void setExerciseType(String exerciseType) {
+        this.exerciseType = exerciseType;
     }
 
-    public String getExercise_answer_type() {
-        return exercise_answer_type;
+    public String getExerciseAnswerType() {
+        return exerciseAnswerType;
     }
 
-    public void setExercise_answer_type(String exercise_answer_type) {
-        this.exercise_answer_type = exercise_answer_type;
+    public void setExerciseAnswerType(String exerciseAnswerType) {
+        this.exerciseAnswerType = exerciseAnswerType;
     }
 
-    public String getExercise_title() {
-        return exercise_title;
+    public String getExerciseTitle() {
+        return exerciseTitle;
     }
 
-    public void setExercise_title(String exercise_title) {
-        this.exercise_title = exercise_title;
+    public void setExerciseTitle(String exerciseTitle) {
+        this.exerciseTitle = exerciseTitle;
     }
 
-    public String getExercise_subtitle() {
-        return exercise_subtitle;
+    public String getExerciseSubtitle() {
+        return exerciseSubtitle;
     }
 
-    public void setExercise_subtitle(String exercise_subtitle) {
-        this.exercise_subtitle = exercise_subtitle;
+    public void setExerciseSubtitle(String exerciseSubtitle) {
+        this.exerciseSubtitle = exerciseSubtitle;
     }
 
-    public String getExercise_text() {
-        return exercise_text;
+    public String getExerciseText() {
+        return exerciseText;
     }
 
-    public void setExercise_text(String exercise_text) {
-        this.exercise_text = exercise_text;
+    public void setExerciseText(String exerciseText) {
+        this.exerciseText = exerciseText;
     }
 
-    public String getExercise_answer_variant() {
-        return exercise_answer_variant;
+    public String getExerciseAnswerVariant() {
+        return exerciseAnswerVariant;
     }
 
-    public void setExercise_answer_variant(String exercise_answer_variant) {
-        this.exercise_answer_variant = exercise_answer_variant;
+    public void setExerciseAnswerVariant(String exerciseAnswerVariant) {
+        this.exerciseAnswerVariant = exerciseAnswerVariant;
     }
 
-    public String getExercise_right_answer() {
-        return exercise_right_answer;
+    public String getExerciseRightAnswer() {
+        return exerciseRightAnswer;
     }
 
-    public void setExercise_right_answer(String exercise_right_answer) {
-        this.exercise_right_answer = exercise_right_answer;
+    public void setExerciseRightAnswer(String exerciseRightAnswer) {
+        this.exerciseRightAnswer = exerciseRightAnswer;
     }
 
     @Override
@@ -123,14 +125,20 @@ public class CourseAdditional {
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", subject='" + subject + '\'' +
-                ", exercises_count='" + exercises_count + '\'' +
-                ", exercise_type='" + exercise_type + '\'' +
-                ", exercise_answer_type='" + exercise_answer_type + '\'' +
-                ", exercise_title='" + exercise_title + '\'' +
-                ", exercise_subtitle='" + exercise_subtitle + '\'' +
-                ", exercise_text='" + exercise_text + '\'' +
-                ", exercise_answer_variant='" + exercise_answer_variant + '\'' +
-                ", exercise_right_answer='" + exercise_right_answer + '\'' +
+                ", exercisesCount='" + exercisesCount + '\'' +
+                ", exerciseType='" + exerciseType + '\'' +
+                ", exerciseAnswerType='" + exerciseAnswerType + '\'' +
+                ", exerciseTitle='" + exerciseTitle + '\'' +
+                ", exerciseSubtitle='" + exerciseSubtitle + '\'' +
+                ", exerciseText='" + exerciseText + '\'' +
+                ", exerciseAnswerVariant='" + exerciseAnswerVariant + '\'' +
+                ", exerciseRightAnswer='" + exerciseRightAnswer + '\'' +
                 '}';
+    }
+
+    @NonNull
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

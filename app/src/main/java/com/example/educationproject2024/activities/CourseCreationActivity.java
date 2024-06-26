@@ -196,7 +196,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                         });
                         s2.addView(keyPar);
                     }
-                    courseCreate.setVisibility(View.VISIBLE);
+                    if (exercisesCount > 0) courseCreate.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -274,48 +274,81 @@ public class CourseCreationActivity extends AppCompatActivity {
                                 }
                                 rightAnswersList.add(s);
                             }
-                            exercise.setExerciseAnswerVariants(rightAnswersList);
+                            exercise.setExerciseRightAnswers(rightAnswersList);
                             if (!isAlright) break;
                         }
                         exercises.add(exercise);
                     }
                     if (isAlright) {
+
                         List<CourseAdditional> courseToSend = new ArrayList<>();
+
                         for (int i = 0; i < exercisesCount; i++) {
                             CourseAdditional courseAdditional = new CourseAdditional();
                             courseAdditional.setName(name);
                             courseAdditional.setDescription(description);
                             courseAdditional.setSubject(subject);
-                            courseAdditional.setExercises_count(Integer.toString(exercisesCount));
-                            courseAdditional.setExercise_type(exercises.get(i).getExerciseType());
-                            courseAdditional.setExercise_answer_type(exercises.get(i).getExerciseAnswerType());
-                            courseAdditional.setExercise_title(exercises.get(i).getExerciseTitle());
+                            courseAdditional.setExercisesCount(Integer.toString(exercisesCount));
+                            courseAdditional.setExerciseType(exercises.get(i).getExerciseType());
+                            courseAdditional.setExerciseAnswerType(exercises.get(i).getExerciseAnswerType());
+                            courseAdditional.setExerciseTitle(exercises.get(i).getExerciseTitle());
                             List<SubtitleAndText> subtitleAndTextList = exercises.get(i).getExerciseSubtitleAndText();
+                            //Log.d("777", subtitleAndTextList.toString());
                             List<String> exerciseAnswerVariants = exercises.get(i).getExerciseAnswerVariants();
                             List<String> exerciseRightAnswers = exercises.get(i).getExerciseRightAnswers();
                             if (exercises.get(i).getExerciseType().equals("Практика")) {
                                 for (int j = 0; j < Math.max(Math.max(subtitleAndTextList.size(), exerciseAnswerVariants.size()), exerciseRightAnswers.size()); j++) {
-                                    if (j < subtitleAndTextList.size()) {
-                                        courseAdditional.setExercise_subtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
-                                        courseAdditional.setExercise_text(subtitleAndTextList.get(j).getExerciseText());
+                                    CourseAdditional courseAdditional1 = null;
+                                    try {
+                                        courseAdditional1 = (CourseAdditional) courseAdditional.clone();
+                                    } catch (CloneNotSupportedException e) {
+                                        throw new RuntimeException(e);
                                     }
-                                    if (j < exerciseAnswerVariants.size()) courseAdditional.setExercise_answer_variant(exerciseAnswerVariants.get(j));
-                                    if (j < exerciseRightAnswers.size()) courseAdditional.setExercise_right_answer(exerciseRightAnswers.get(j));
-                                    courseToSend.add(courseAdditional);
+                                    if (j < subtitleAndTextList.size()) {
+                                        courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
+                                        courseAdditional1.setExerciseText(subtitleAndTextList.get(j).getExerciseText());
+                                    }
+                                    else {
+                                        courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(subtitleAndTextList.size() - 1).getExerciseSubtitle());
+                                        courseAdditional1.setExerciseText(subtitleAndTextList.get(subtitleAndTextList.size() - 1).getExerciseText());
+                                    }
+                                    if (j < exerciseAnswerVariants.size()) {
+                                        courseAdditional1.setExerciseAnswerVariant(exerciseAnswerVariants.get(j));
+                                    }
+                                    else {
+                                        courseAdditional1.setExerciseAnswerVariant(exerciseAnswerVariants.get(exerciseAnswerVariants.size() - 1));
+                                    }
+                                    if (j < exerciseRightAnswers.size()) {
+                                        courseAdditional1.setExerciseRightAnswer(exerciseRightAnswers.get(j));
+                                    }
+                                    else {
+                                        courseAdditional1.setExerciseRightAnswer(exerciseRightAnswers.get(exerciseRightAnswers.size() - 1));
+                                    }
+                                    courseToSend.add(courseAdditional1);
                                 }
                             }
                             else {
                                 for (int j = 0; j < subtitleAndTextList.size(); j++) {
-                                    courseAdditional.setExercise_subtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
-                                    courseAdditional.setExercise_text(subtitleAndTextList.get(j).getExerciseText());
-                                    courseToSend.add(courseAdditional);
-                                    Log.d("777", courseToSend.get(j).toString());
+                                    //Log.d("777", "****" + subtitleAndTextList.get(j).getExerciseSubtitle() + " " + subtitleAndTextList.get(j).getExerciseText());
+                                    CourseAdditional courseAdditional1 = null;
+                                    try {
+                                        courseAdditional1 = (CourseAdditional) courseAdditional.clone();
+                                    } catch (CloneNotSupportedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
+                                    courseAdditional1.setExerciseText(subtitleAndTextList.get(j).getExerciseText());
+                                    //Log.d("777", courseAdditional1.toString());
+                                    courseToSend.add(courseAdditional1);
+                                    //Log.d("777", courseToSend.toString());
                                 }
                             }
+                            Log.d("777", courseToSend.toString());
                             Call<Void> call = api.createCourse(APIKEY, courseToSend);
                             call.enqueue(new Callback<Void>() {
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
+                                    Log.d("777", call.toString());
                                     courseToSend.clear();
                                 }
 
