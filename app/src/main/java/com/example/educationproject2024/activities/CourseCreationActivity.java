@@ -214,11 +214,12 @@ public class CourseCreationActivity extends AppCompatActivity {
                 else {
                     int exercisesCount = Integer.parseInt(courseExercisesCount.getText().toString());
                     boolean isAlright = true;
-                    for (int i = 0; i < exercisesCount; i++) {
+                    for (int i = 1; i <= exercisesCount; i++) {
                         Exercise exercise = new Exercise();
-                        LinearLayout exercisesLayout = (LinearLayout) s2.getChildAt(i);
+                        LinearLayout exercisesLayout = (LinearLayout) s2.getChildAt(i - 1);
                         Spinner exerciseTypeSpinner = exercisesLayout.findViewById(R.id.spinner_exercise_type);
                         String exerciseType = exerciseTypeSpinner.getSelectedItem().toString();
+                        exercise.setExerciseNumber(i + "");
                         exercise.setExerciseType(exerciseType);
                         if (exerciseType.equals("Практика")) {
                             Spinner exerciseAnswerTypeSpinner = exercisesLayout.findViewById(R.id.spinner_exercise_answer_type);
@@ -280,56 +281,96 @@ public class CourseCreationActivity extends AppCompatActivity {
                         exercises.add(exercise);
                     }
                     if (isAlright) {
-
-                        List<CourseAdditional> courseToSend = new ArrayList<>();
-
                         for (int i = 0; i < exercisesCount; i++) {
                             CourseAdditional courseAdditional = new CourseAdditional();
                             courseAdditional.setName(name);
                             courseAdditional.setDescription(description);
                             courseAdditional.setSubject(subject);
                             courseAdditional.setExercisesCount(Integer.toString(exercisesCount));
+                            courseAdditional.setExerciseNumber(exercises.get(i).getExerciseNumber());
                             courseAdditional.setExerciseType(exercises.get(i).getExerciseType());
                             courseAdditional.setExerciseAnswerType(exercises.get(i).getExerciseAnswerType());
                             courseAdditional.setExerciseTitle(exercises.get(i).getExerciseTitle());
                             List<SubtitleAndText> subtitleAndTextList = exercises.get(i).getExerciseSubtitleAndText();
-                            //Log.d("777", subtitleAndTextList.toString());
                             List<String> exerciseAnswerVariants = exercises.get(i).getExerciseAnswerVariants();
                             List<String> exerciseRightAnswers = exercises.get(i).getExerciseRightAnswers();
                             if (exercises.get(i).getExerciseType().equals("Практика")) {
-                                for (int j = 0; j < Math.max(Math.max(subtitleAndTextList.size(), exerciseAnswerVariants.size()), exerciseRightAnswers.size()); j++) {
-                                    CourseAdditional courseAdditional1 = null;
-                                    try {
-                                        courseAdditional1 = (CourseAdditional) courseAdditional.clone();
-                                    } catch (CloneNotSupportedException e) {
-                                        throw new RuntimeException(e);
+                                if (exercises.get(i).getExerciseAnswerType().equals("Выбор ответа")) {
+                                    for (int j = 0; j < Math.max(Math.max(subtitleAndTextList.size(), exerciseAnswerVariants.size()), exerciseRightAnswers.size()); j++) {
+                                        CourseAdditional courseAdditional1 = null;
+                                        try {
+                                            courseAdditional1 = (CourseAdditional) courseAdditional.clone();
+                                        } catch (CloneNotSupportedException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        if (j < subtitleAndTextList.size()) {
+                                            courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
+                                            courseAdditional1.setExerciseText(subtitleAndTextList.get(j).getExerciseText());
+                                        } else {
+                                            courseAdditional1.setExerciseSubtitle("");
+                                            courseAdditional1.setExerciseText("");
+                                        }
+                                        if (j < exerciseAnswerVariants.size()) {
+                                            courseAdditional1.setExerciseAnswerVariant(exerciseAnswerVariants.get(j));
+                                        } else {
+                                            courseAdditional1.setExerciseAnswerVariant("");
+                                        }
+                                        if (j < exerciseRightAnswers.size()) {
+                                            courseAdditional1.setExerciseRightAnswer(exerciseRightAnswers.get(j));
+                                        } else {
+                                            courseAdditional1.setExerciseRightAnswer("");
+                                        }
+                                        Call<Void> call = api.createCourse(APIKEY, courseAdditional1);
+                                        call.enqueue(new Callback<Void>() {
+                                            @Override
+                                            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Void> call, Throwable t) {
+                                                Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
-                                    if (j < subtitleAndTextList.size()) {
-                                        courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
-                                        courseAdditional1.setExerciseText(subtitleAndTextList.get(j).getExerciseText());
+                                }
+                                else {
+                                    for (int j = 0; j < Math.max(subtitleAndTextList.size(), exerciseRightAnswers.size()); j++) {
+                                        CourseAdditional courseAdditional1 = null;
+                                        try {
+                                            courseAdditional1 = (CourseAdditional) courseAdditional.clone();
+                                        } catch (CloneNotSupportedException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        if (j < subtitleAndTextList.size()) {
+                                            courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
+                                            courseAdditional1.setExerciseText(subtitleAndTextList.get(j).getExerciseText());
+                                        } else {
+                                            courseAdditional1.setExerciseSubtitle("");
+                                            courseAdditional1.setExerciseText("");
+                                        }
+                                        if (j < exerciseRightAnswers.size()) {
+                                            courseAdditional1.setExerciseRightAnswer(exerciseRightAnswers.get(j));
+                                        } else {
+                                            courseAdditional1.setExerciseRightAnswer("");
+                                        }
+                                        Call<Void> call = api.createCourse(APIKEY, courseAdditional1);
+                                        call.enqueue(new Callback<Void>() {
+                                            @Override
+                                            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Void> call, Throwable t) {
+                                                Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
-                                    else {
-                                        courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(subtitleAndTextList.size() - 1).getExerciseSubtitle());
-                                        courseAdditional1.setExerciseText(subtitleAndTextList.get(subtitleAndTextList.size() - 1).getExerciseText());
-                                    }
-                                    if (j < exerciseAnswerVariants.size()) {
-                                        courseAdditional1.setExerciseAnswerVariant(exerciseAnswerVariants.get(j));
-                                    }
-                                    else {
-                                        courseAdditional1.setExerciseAnswerVariant(exerciseAnswerVariants.get(exerciseAnswerVariants.size() - 1));
-                                    }
-                                    if (j < exerciseRightAnswers.size()) {
-                                        courseAdditional1.setExerciseRightAnswer(exerciseRightAnswers.get(j));
-                                    }
-                                    else {
-                                        courseAdditional1.setExerciseRightAnswer(exerciseRightAnswers.get(exerciseRightAnswers.size() - 1));
-                                    }
-                                    courseToSend.add(courseAdditional1);
                                 }
                             }
                             else {
                                 for (int j = 0; j < subtitleAndTextList.size(); j++) {
-                                    //Log.d("777", "****" + subtitleAndTextList.get(j).getExerciseSubtitle() + " " + subtitleAndTextList.get(j).getExerciseText());
                                     CourseAdditional courseAdditional1 = null;
                                     try {
                                         courseAdditional1 = (CourseAdditional) courseAdditional.clone();
@@ -338,25 +379,20 @@ public class CourseCreationActivity extends AppCompatActivity {
                                     }
                                     courseAdditional1.setExerciseSubtitle(subtitleAndTextList.get(j).getExerciseSubtitle());
                                     courseAdditional1.setExerciseText(subtitleAndTextList.get(j).getExerciseText());
-                                    //Log.d("777", courseAdditional1.toString());
-                                    courseToSend.add(courseAdditional1);
-                                    //Log.d("777", courseToSend.toString());
+                                    Call<Void> call = api.createCourse(APIKEY, courseAdditional1);
+                                    call.enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Call<Void> call, Response<Void> response) {
+
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Void> call, Throwable t) {
+                                            Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
                             }
-                            Log.d("777", courseToSend.toString());
-                            Call<Void> call = api.createCourse(APIKEY, courseToSend);
-                            call.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    Log.d("777", call.toString());
-                                    courseToSend.clear();
-                                }
-
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                    Toast.makeText(CourseCreationActivity.this, "Произошла ошибка! Попробуйте ещё раз", Toast.LENGTH_SHORT).show();
-                                }
-                            });
                         }
                         startActivity(new Intent(CourseCreationActivity.this, ProfileActivity.class));
                     }

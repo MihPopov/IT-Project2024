@@ -1,6 +1,5 @@
 package com.example.educationproject2024.controller;
 
-import com.example.educationproject2024.data.Course;
 import com.example.educationproject2024.data.CourseAdditional;
 import com.example.educationproject2024.data.User;
 
@@ -23,8 +22,11 @@ public interface API {
     Call<List<User>> getAccount(@Header("apikey") String apikey, @Query("select") String select);
 
     @POST("courses")
-    Call<Void> createCourse(@Header("apikey") String apikey, @Body List<CourseAdditional> course);
+    Call<Void> createCourse(@Header("apikey") String apikey, @Body CourseAdditional course);
 
     @GET("courses")
-    Call<List<Course>> getCourses(@Header("apikey") String apikey, @Query("select") String select);
+    Call<List<CourseAdditional>> getCourses(@Header("apikey") String apikey, @Query("select") String select);
+
+    @GET("courses")
+    Call<List<CourseAdditional>> getCourse(@Header("apikey") String apikey, @Query("select") String select, @Query("name") String name);
 }

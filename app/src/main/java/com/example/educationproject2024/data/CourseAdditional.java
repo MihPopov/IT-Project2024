@@ -13,6 +13,8 @@ public class CourseAdditional implements Cloneable {
     public String subject;
     @SerializedName("exercises_count")
     public String exercisesCount;
+    @SerializedName("exercise_number")
+    public String exerciseNumber;
     @SerializedName("exercise_type")
     public String exerciseType;
     @SerializedName("exercise_answer_type")
@@ -61,6 +63,14 @@ public class CourseAdditional implements Cloneable {
 
     public void setExercisesCount(String exercisesCount) {
         this.exercisesCount = exercisesCount;
+    }
+
+    public String getExerciseNumber() {
+        return exerciseNumber;
+    }
+
+    public void setExerciseNumber(String exerciseNumber) {
+        this.exerciseNumber = exerciseNumber;
     }
 
     public String getExerciseType() {
@@ -126,6 +136,7 @@ public class CourseAdditional implements Cloneable {
                 ", description='" + description + '\'' +
                 ", subject='" + subject + '\'' +
                 ", exercisesCount='" + exercisesCount + '\'' +
+                ", exerciseNumber='" + exerciseNumber + '\'' +
                 ", exerciseType='" + exerciseType + '\'' +
                 ", exerciseAnswerType='" + exerciseAnswerType + '\'' +
                 ", exerciseTitle='" + exerciseTitle + '\'' +

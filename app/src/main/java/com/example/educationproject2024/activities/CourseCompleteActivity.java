@@ -2,15 +2,16 @@ package com.example.educationproject2024.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.educationproject2024.R;
+import com.example.educationproject2024.data.Course;
+import com.example.educationproject2024.data.Exercise;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CourseCompleteActivity extends AppCompatActivity {
@@ -31,7 +32,8 @@ public class CourseCompleteActivity extends AppCompatActivity {
             String courseName = extras.getString("course_name");
             int courseExercisesCount = Integer.parseInt(extras.getString("course_exercises_count"));
 
-            String courseExercises = extras.getString("course_exercises");
+            List<Exercise> courseExercises = ((Course) extras.getSerializable("course_exercises")).getExercises();
+            Log.d("777", courseExercises.toString());
 
             courseNameAsTitle.setText(courseName);
 

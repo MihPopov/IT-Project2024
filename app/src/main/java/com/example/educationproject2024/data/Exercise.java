@@ -1,8 +1,10 @@
 package com.example.educationproject2024.data;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Exercise {
+public class Exercise implements Serializable {
+    public String exerciseNumber;
     public String exerciseType;
     public String exerciseAnswerType;
     public String exerciseTitle;
@@ -11,6 +13,14 @@ public class Exercise {
     public List<String> exerciseRightAnswers;
 
     public Exercise() {
+    }
+
+    public String getExerciseNumber() {
+        return exerciseNumber;
+    }
+
+    public void setExerciseNumber(String exerciseNumber) {
+        this.exerciseNumber = exerciseNumber;
     }
 
     public String getExerciseType() {
@@ -59,5 +69,18 @@ public class Exercise {
 
     public void setExerciseRightAnswers(List<String> exerciseRightAnswers) {
         this.exerciseRightAnswers = exerciseRightAnswers;
+    }
+
+    @Override
+    public String toString() {
+        return "Exercise{" +
+                "exerciseNumber='" + exerciseNumber + '\'' +
+                ", exerciseType='" + exerciseType + '\'' +
+                ", exerciseAnswerType='" + exerciseAnswerType + '\'' +
+                ", exerciseTitle='" + exerciseTitle + '\'' +
+                ", exerciseSubtitleAndText=" + exerciseSubtitleAndText +
+                ", exerciseAnswerVariants=" + exerciseAnswerVariants +
+                ", exerciseRightAnswers=" + exerciseRightAnswers +
+                '}';
     }
 }

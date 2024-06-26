@@ -1,6 +1,8 @@
 package com.example.educationproject2024.data;
 
-public class SubtitleAndText {
+import java.io.Serializable;
+
+public class SubtitleAndText implements Serializable {
     public String exerciseSubtitle;
     public String exerciseText;
 

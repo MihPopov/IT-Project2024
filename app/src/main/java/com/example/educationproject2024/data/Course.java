@@ -2,9 +2,10 @@ package com.example.educationproject2024.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Course {
+public class Course implements Serializable {
 
     public String name;
     public String description;
