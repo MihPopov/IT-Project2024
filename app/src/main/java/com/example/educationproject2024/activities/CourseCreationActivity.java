@@ -17,8 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.educationproject2024.R;
+import com.example.educationproject2024.Utils;
 import com.example.educationproject2024.controller.API;
 import com.example.educationproject2024.data.CourseAdditional;
 import com.example.educationproject2024.data.Exercise;
@@ -26,6 +28,7 @@ import com.example.educationproject2024.data.SubtitleAndText;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,6 +42,7 @@ public class CourseCreationActivity extends AppCompatActivity {
     EditText courseName, courseDescription, courseExercisesCount;
     Spinner courseSubject;
     Button nextStep, courseCreate;
+    CardView important;
     LinearLayout s2;
 
     Retrofit retrofit;
@@ -55,6 +59,7 @@ public class CourseCreationActivity extends AppCompatActivity {
         courseSubject = findViewById(R.id.spinnerCourseSubject);
         nextStep = findViewById(R.id.button_next1);
         courseCreate = findViewById(R.id.button_course_create);
+        important = findViewById(R.id.important);
 
         String[] items = new String[]{"Математика", "История", "Информатика", "Химия"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
@@ -72,7 +77,7 @@ public class CourseCreationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = courseName.getText().toString();
                 String description = courseDescription.getText().toString();
-                if (name.equals("") || description.equals("") || courseExercisesCount.getText().toString().equals("")) {
+                if (name.equals("") || description.equals("") || courseExercisesCount.getText().toString().equals("") || Integer.parseInt(courseExercisesCount.getText().toString()) < 5 || Integer.parseInt(courseExercisesCount.getText().toString()) > 10) {
                     Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -93,15 +98,26 @@ public class CourseCreationActivity extends AppCompatActivity {
                             answerNum.setText(j + "");
                         }
 
+                        Spinner dropAnswerType = keyPar.findViewById(R.id.spinner_exercise_answer_type);
+                        String[] items = new String[]{"Выбор ответа", "Ввод ответа"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
+                        dropAnswerType.setAdapter(adapter);
+                        Spinner exerciseType = keyPar.findViewById(R.id.spinner_exercise_type);
+                        items = new String[]{"Теория", "Практика"};
+                        adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
+                        exerciseType.setAdapter(adapter);
+
                         MaterialButton addAnswerButton = keyPar.findViewById(R.id.button_add_new_var);
                         MaterialButton removeAnswerButton = keyPar.findViewById(R.id.button_remove_var);
                         addAnswerButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
-                                answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
-                                TextView answerNum = answerVariant.findViewById(R.id.answer_num);
-                                answerNum.setText(answerVariantsList.getChildCount() - 1 + "");
+                                if (answerVariantsList.getChildCount() < 14) {
+                                    LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
+                                    answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
+                                    TextView answerNum = answerVariant.findViewById(R.id.answer_num);
+                                    answerNum.setText(answerVariantsList.getChildCount() - 1 + "");
+                                }
                             }
                         });
                         removeAnswerButton.setOnClickListener(new View.OnClickListener() {
@@ -119,10 +135,12 @@ public class CourseCreationActivity extends AppCompatActivity {
                         addRightAnswerButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                LinearLayout rightAnswerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
-                                rightAnswers.addView(rightAnswerVariant, rightAnswers.getChildCount() - 1);
-                                TextView rightAnswerNum = rightAnswerVariant.findViewById(R.id.right_answer_num);
-                                rightAnswerNum.setText(rightAnswers.getChildCount() - 1 + "");
+                                if ((exerciseType.getSelectedItem().toString().equals("Практика") && dropAnswerType.getSelectedItem().toString().equals("Выбор ответа") && rightAnswers.getChildCount() < answerVariantsList.getChildCount()) || (dropAnswerType.getSelectedItem().toString().equals("Ввод ответа"))) {
+                                    LinearLayout rightAnswerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
+                                    rightAnswers.addView(rightAnswerVariant, rightAnswers.getChildCount() - 1);
+                                    TextView rightAnswerNum = rightAnswerVariant.findViewById(R.id.right_answer_num);
+                                    rightAnswerNum.setText(rightAnswers.getChildCount() - 1 + "");
+                                }
                             }
                         });
                         removeRightAnswerButton.setOnClickListener(new View.OnClickListener() {
@@ -132,14 +150,6 @@ public class CourseCreationActivity extends AppCompatActivity {
                             }
                         });
 
-                        Spinner dropAnswerType = keyPar.findViewById(R.id.spinner_exercise_answer_type);
-                        String[] items = new String[]{"Выбор ответа", "Ввод ответа"};
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
-                        dropAnswerType.setAdapter(adapter);
-                        Spinner exerciseType = keyPar.findViewById(R.id.spinner_exercise_type);
-                        items = new String[]{"Теория", "Практика"};
-                        adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
-                        exerciseType.setAdapter(adapter);
                         exerciseType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -184,8 +194,10 @@ public class CourseCreationActivity extends AppCompatActivity {
                         addButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                LinearLayout subtitleAndText = (LinearLayout) getLayoutInflater().inflate(R.layout.course_subtitle_and_text, null);
-                                subtitleAndTextList.addView(subtitleAndText, subtitleAndTextList.getChildCount() - 1);
+                                if (subtitleAndTextList.getChildCount() < 12) {
+                                    LinearLayout subtitleAndText = (LinearLayout) getLayoutInflater().inflate(R.layout.course_subtitle_and_text, null);
+                                    subtitleAndTextList.addView(subtitleAndText, subtitleAndTextList.getChildCount() - 1);
+                                }
                             }
                         });
                         removeButton.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +208,8 @@ public class CourseCreationActivity extends AppCompatActivity {
                         });
                         s2.addView(keyPar);
                     }
-                    if (exercisesCount > 0) courseCreate.setVisibility(View.VISIBLE);
+                    courseCreate.setVisibility(View.VISIBLE);
+                    important.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -394,6 +407,23 @@ public class CourseCreationActivity extends AppCompatActivity {
                                 }
                             }
                         }
+
+                        Utils.user.setCoursesCreated((Integer.parseInt(Utils.user.getCoursesCreated()) + 1) + "");
+                        HashMap<String, String> parameters = new HashMap<>();
+                        parameters.put("courses_created", Utils.user.getCoursesCreated());
+                        Call<Void> call = api.updateAccount(APIKEY, parameters, "eq." + Utils.user.getFullName());
+                        call.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+
+                            }
+                        });
+
                         startActivity(new Intent(CourseCreationActivity.this, ProfileActivity.class));
                     }
                 }

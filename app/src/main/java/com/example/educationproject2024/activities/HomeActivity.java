@@ -22,6 +22,7 @@ import com.example.educationproject2024.controller.API;
 import com.example.educationproject2024.data.Course;
 import com.example.educationproject2024.data.CourseAdditional;
 import com.example.educationproject2024.data.Exercise;
+import com.example.educationproject2024.data.ExerciseComplete;
 import com.example.educationproject2024.data.SubtitleAndText;
 import com.google.android.material.card.MaterialCardView;
 
@@ -133,6 +134,23 @@ public class HomeActivity extends AppCompatActivity {
                                 coursePanel.setCardBackgroundColor(Color.parseColor("#2EFF00"));
                                 coursePanel.setStrokeColor(Color.parseColor("#8BC34A"));
                             }
+
+                            Call<List<ExerciseComplete>> call3 = api.getCompletedCourses(APIKEY, "user_name,course_name");
+                            call3.enqueue(new Callback<List<ExerciseComplete>>() {
+                                @Override
+                                public void onResponse(Call<List<ExerciseComplete>> call, Response<List<ExerciseComplete>> response) {
+                                    for (int i = 0; i < response.body().size(); i++) {
+                                        if (response.body().get(i).getUserName().equals(Utils.user.getFullName()) && response.body().get(i).getCourseName().equals(courseData.get(0).getName())) {
+                                            coursePanel.findViewById(R.id.complete_status).setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<ExerciseComplete>> call, Throwable t) {
+
+                                }
+                            });
 
                             Course course = new Course();
                             course.setExercises(exercises);

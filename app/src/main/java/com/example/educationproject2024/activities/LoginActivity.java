@@ -5,6 +5,7 @@ import static com.example.educationproject2024.Utils.BASE_URL;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -58,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Заполните все поля!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Call<List<User>> call = api.getAccount(APIKEY, "full_name,email,password");
+                    Call<List<User>> call = api.getAccount(APIKEY, "*");
                     call.enqueue(new Callback<List<User>>() {
                         @Override
                         public void onResponse(Call<List<User>> call, Response<List<User>> response) {
@@ -70,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                                     Utils.user.setFullName(data.get(i).getFullName());
                                     Utils.user.setEmail(data.get(i).getEmail());
                                     Utils.user.setPassword(data.get(i).getPassword());
+                                    Utils.user.setCoursesCreated(data.get(i).getCoursesCreated());
+                                    Utils.user.setCoursesCompleted(data.get(i).getCoursesCompleted());
                                     break;
                                 }
                             }
