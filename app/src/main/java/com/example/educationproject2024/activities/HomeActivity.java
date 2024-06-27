@@ -23,6 +23,7 @@ import com.example.educationproject2024.data.Course;
 import com.example.educationproject2024.data.CourseAdditional;
 import com.example.educationproject2024.data.Exercise;
 import com.example.educationproject2024.data.SubtitleAndText;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
                                 }
                                 exercises.add(exercise);
                             }
-                            CardView coursePanel = (CardView) getLayoutInflater().inflate(R.layout.course_panel, null);
+                            MaterialCardView coursePanel = (MaterialCardView) getLayoutInflater().inflate(R.layout.course_panel, null);
 
                             TextView tv = coursePanel.findViewById(R.id.course_name);
                             tv.setText(courseData.get(0).getName());
@@ -116,13 +117,22 @@ public class HomeActivity extends AppCompatActivity {
                             tv.setText(courseData.get(0).getExercisesCount());
 
                             String subject = courseData.get(0).getSubject();
-                            LinearLayout panelBackground = coursePanel.findViewById(R.id.panel_background);
                             if (subject.equals("Математика")) {
-                                panelBackground.setBackgroundColor(Color.parseColor("#00F7FF"));
+                                coursePanel.setCardBackgroundColor(Color.parseColor("#00F7FF"));
+                                coursePanel.setStrokeColor(Color.parseColor("#00BCD4"));
                             }
-                            if (subject.equals("История")) panelBackground.setBackgroundColor(Color.parseColor("#FB6060"));
-                            if (subject.equals("Информатика")) panelBackground.setBackgroundColor(Color.parseColor("##FFF200"));
-                            if (subject.equals("Химия")) panelBackground.setBackgroundColor(Color.parseColor("#2EFF00"));
+                            if (subject.equals("История")) {
+                                coursePanel.setCardBackgroundColor(Color.parseColor("#FB6060"));
+                                coursePanel.setStrokeColor(Color.parseColor("#B8514A"));
+                            }
+                            if (subject.equals("Информатика")) {
+                                coursePanel.setCardBackgroundColor(Color.parseColor("#FFF200"));
+                                coursePanel.setStrokeColor(Color.parseColor("#EBBC2E"));
+                            }
+                            if (subject.equals("Химия")) {
+                                coursePanel.setCardBackgroundColor(Color.parseColor("#2EFF00"));
+                                coursePanel.setStrokeColor(Color.parseColor("#8BC34A"));
+                            }
 
                             Course course = new Course();
                             course.setExercises(exercises);
