@@ -117,7 +117,9 @@ public class HomeActivity extends AppCompatActivity {
 
                             String subject = courseData.get(0).getSubject();
                             LinearLayout panelBackground = coursePanel.findViewById(R.id.panel_background);
-                            if (subject.equals("Математика")) panelBackground.setBackgroundColor(Color.parseColor("#00F7FF"));
+                            if (subject.equals("Математика")) {
+                                panelBackground.setBackgroundColor(Color.parseColor("#00F7FF"));
+                            }
                             if (subject.equals("История")) panelBackground.setBackgroundColor(Color.parseColor("#FB6060"));
                             if (subject.equals("Информатика")) panelBackground.setBackgroundColor(Color.parseColor("##FFF200"));
                             if (subject.equals("Химия")) panelBackground.setBackgroundColor(Color.parseColor("#2EFF00"));
