@@ -127,7 +127,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                                     addAnswerButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if (answerVariantsList.getChildCount() < 14) {
+                                            if (answerVariantsList.getChildCount() < 8) {
                                                 LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
                                                 answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
                                                 TextView answerNum = answerVariant.findViewById(R.id.answer_num);
@@ -209,7 +209,7 @@ public class CourseCreationActivity extends AppCompatActivity {
                                     addButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if (subtitleAndTextList.getChildCount() < 20) {
+                                            if (subtitleAndTextList.getChildCount() < 6) {
                                                 LinearLayout subtitleAndText = (LinearLayout) getLayoutInflater().inflate(R.layout.course_subtitle_and_text, null);
                                                 subtitleAndTextList.addView(subtitleAndText, subtitleAndTextList.getChildCount() - 1);
                                             }

@@ -94,6 +94,9 @@ public class ChangeUserActivity extends AppCompatActivity {
                         }
                     });
                 }
+                else {
+                    Toast.makeText(ChangeUserActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
