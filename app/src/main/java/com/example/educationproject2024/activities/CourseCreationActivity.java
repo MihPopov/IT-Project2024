@@ -30,6 +30,7 @@ import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TransferQueue;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,93 +78,120 @@ public class CourseCreationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = courseName.getText().toString();
                 String description = courseDescription.getText().toString();
-                if (name.equals("") || description.equals("") || courseExercisesCount.getText().toString().equals("") || Integer.parseInt(courseExercisesCount.getText().toString()) < 5 || Integer.parseInt(courseExercisesCount.getText().toString()) > 10) {
-                    Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    int exercisesCount = Integer.parseInt(courseExercisesCount.getText().toString());
-                    s2.removeAllViews();
-                    for (int i = 1; i <= exercisesCount; i++) {
-                        LinearLayout keyPar = (LinearLayout) getLayoutInflater().inflate(R.layout.course_exercise, null);
-                        LinearLayout answerType = keyPar.findViewById(R.id.exercise_answer_type);
-                        LinearLayout rightAnswers = keyPar.findViewById(R.id.right_answers);
-                        LinearLayout answerVariantsList = keyPar.findViewById(R.id.answer_variants);
-                        TextView exerciseNum = keyPar.findViewById(R.id.exercise_num);
-                        exerciseNum.setText(i + "");
 
-                        for (int j = 1; j < 3; j++) {
-                            LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
-                            answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
-                            TextView answerNum = answerVariant.findViewById(R.id.answer_num);
-                            answerNum.setText(j + "");
+                Call<List<CourseAdditional>> call = api.getCourses(APIKEY, "name");
+                call.enqueue(new Callback<List<CourseAdditional>>() {
+                    @Override
+                    public void onResponse(Call<List<CourseAdditional>> call, Response<List<CourseAdditional>> response) {
+                        List<String> coursesName = new ArrayList<>();
+                        for (int i = 0; i < response.body().size(); i++) {
+                            String name = response.body().get(i).getName();
+                            if (!coursesName.contains(name)) coursesName.add(name);
                         }
-
-                        Spinner dropAnswerType = keyPar.findViewById(R.id.spinner_exercise_answer_type);
-                        String[] items = new String[]{"Выбор ответа", "Ввод ответа"};
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
-                        dropAnswerType.setAdapter(adapter);
-                        Spinner exerciseType = keyPar.findViewById(R.id.spinner_exercise_type);
-                        items = new String[]{"Теория", "Практика"};
-                        adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
-                        exerciseType.setAdapter(adapter);
-
-                        MaterialButton addAnswerButton = keyPar.findViewById(R.id.button_add_new_var);
-                        MaterialButton removeAnswerButton = keyPar.findViewById(R.id.button_remove_var);
-                        addAnswerButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (answerVariantsList.getChildCount() < 14) {
-                                    LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
-                                    answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
-                                    TextView answerNum = answerVariant.findViewById(R.id.answer_num);
-                                    answerNum.setText(answerVariantsList.getChildCount() - 1 + "");
-                                }
+                        if (coursesName.contains(name)) {
+                            Toast.makeText(CourseCreationActivity.this, "Данное название курса уже занято! Придумайте другое!", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            if (name.equals("") || description.equals("") || courseExercisesCount.getText().toString().equals("") || Integer.parseInt(courseExercisesCount.getText().toString()) < 5 || Integer.parseInt(courseExercisesCount.getText().toString()) > 15) {
+                                Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
                             }
-                        });
-                        removeAnswerButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (answerVariantsList.getChildCount() > 3) answerVariantsList.removeViewAt(answerVariantsList.getChildCount() - 2);
-                            }
-                        });
+                            else {
+                                int exercisesCount = Integer.parseInt(courseExercisesCount.getText().toString());
+                                s2.removeAllViews();
+                                for (int i = 1; i <= exercisesCount; i++) {
+                                    LinearLayout keyPar = (LinearLayout) getLayoutInflater().inflate(R.layout.course_exercise, null);
+                                    LinearLayout answerType = keyPar.findViewById(R.id.exercise_answer_type);
+                                    LinearLayout rightAnswers = keyPar.findViewById(R.id.right_answers);
+                                    LinearLayout answerVariantsList = keyPar.findViewById(R.id.answer_variants);
+                                    TextView exerciseNum = keyPar.findViewById(R.id.exercise_num);
+                                    exerciseNum.setText(i + "");
 
-                        LinearLayout rightAnswer = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
-                        rightAnswers.addView(rightAnswer, rightAnswers.getChildCount() - 1);
+                                    for (int j = 1; j < 3; j++) {
+                                        LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
+                                        answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
+                                        TextView answerNum = answerVariant.findViewById(R.id.answer_num);
+                                        answerNum.setText(j + "");
+                                    }
 
-                        MaterialButton addRightAnswerButton = keyPar.findViewById(R.id.button_add_new_right_var);
-                        MaterialButton removeRightAnswerButton = keyPar.findViewById(R.id.button_remove_right_var);
-                        addRightAnswerButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if ((exerciseType.getSelectedItem().toString().equals("Практика") && dropAnswerType.getSelectedItem().toString().equals("Выбор ответа") && rightAnswers.getChildCount() < answerVariantsList.getChildCount()) || (dropAnswerType.getSelectedItem().toString().equals("Ввод ответа"))) {
-                                    LinearLayout rightAnswerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
-                                    rightAnswers.addView(rightAnswerVariant, rightAnswers.getChildCount() - 1);
-                                    TextView rightAnswerNum = rightAnswerVariant.findViewById(R.id.right_answer_num);
-                                    rightAnswerNum.setText(rightAnswers.getChildCount() - 1 + "");
-                                }
-                            }
-                        });
-                        removeRightAnswerButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (rightAnswers.getChildCount() > 2) rightAnswers.removeViewAt(rightAnswers.getChildCount() - 2);
-                            }
-                        });
+                                    Spinner dropAnswerType = keyPar.findViewById(R.id.spinner_exercise_answer_type);
+                                    String[] items = new String[]{"Выбор ответа", "Ввод ответа"};
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
+                                    dropAnswerType.setAdapter(adapter);
+                                    Spinner exerciseType = keyPar.findViewById(R.id.spinner_exercise_type);
+                                    items = new String[]{"Теория", "Практика"};
+                                    adapter = new ArrayAdapter<>(keyPar.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
+                                    exerciseType.setAdapter(adapter);
 
-                        exerciseType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                if (parent.getItemAtPosition(position).equals("Практика")) {
-                                    answerType.setVisibility(View.VISIBLE);
-                                    rightAnswers.setVisibility(View.VISIBLE);
-                                    dropAnswerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    MaterialButton addAnswerButton = keyPar.findViewById(R.id.button_add_new_var);
+                                    MaterialButton removeAnswerButton = keyPar.findViewById(R.id.button_remove_var);
+                                    addAnswerButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (answerVariantsList.getChildCount() < 14) {
+                                                LinearLayout answerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_answer, null);
+                                                answerVariantsList.addView(answerVariant, answerVariantsList.getChildCount() - 1);
+                                                TextView answerNum = answerVariant.findViewById(R.id.answer_num);
+                                                answerNum.setText(answerVariantsList.getChildCount() - 1 + "");
+                                            }
+                                        }
+                                    });
+                                    removeAnswerButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (answerVariantsList.getChildCount() > 3) answerVariantsList.removeViewAt(answerVariantsList.getChildCount() - 2);
+                                        }
+                                    });
+
+                                    LinearLayout rightAnswer = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
+                                    rightAnswers.addView(rightAnswer, rightAnswers.getChildCount() - 1);
+
+                                    MaterialButton addRightAnswerButton = keyPar.findViewById(R.id.button_add_new_right_var);
+                                    MaterialButton removeRightAnswerButton = keyPar.findViewById(R.id.button_remove_right_var);
+                                    addRightAnswerButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if ((exerciseType.getSelectedItem().toString().equals("Практика") && dropAnswerType.getSelectedItem().toString().equals("Выбор ответа") && rightAnswers.getChildCount() < answerVariantsList.getChildCount()) || (dropAnswerType.getSelectedItem().toString().equals("Ввод ответа"))) {
+                                                LinearLayout rightAnswerVariant = (LinearLayout) getLayoutInflater().inflate(R.layout.course_right_answer, null);
+                                                rightAnswers.addView(rightAnswerVariant, rightAnswers.getChildCount() - 1);
+                                                TextView rightAnswerNum = rightAnswerVariant.findViewById(R.id.right_answer_num);
+                                                rightAnswerNum.setText(rightAnswers.getChildCount() - 1 + "");
+                                            }
+                                        }
+                                    });
+                                    removeRightAnswerButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (rightAnswers.getChildCount() > 2) rightAnswers.removeViewAt(rightAnswers.getChildCount() - 2);
+                                        }
+                                    });
+
+                                    exerciseType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                         @Override
                                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                            if (parent.getItemAtPosition(position).equals("Выбор ответа")) {
-                                                answerVariantsList.setVisibility(View.VISIBLE);
+                                            if (parent.getItemAtPosition(position).equals("Практика")) {
+                                                answerType.setVisibility(View.VISIBLE);
+                                                rightAnswers.setVisibility(View.VISIBLE);
+                                                dropAnswerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                                    @Override
+                                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                                        if (parent.getItemAtPosition(position).equals("Выбор ответа")) {
+                                                            answerVariantsList.setVisibility(View.VISIBLE);
+                                                        }
+                                                        else {
+                                                            answerVariantsList.setVisibility(View.GONE);
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onNothingSelected(AdapterView<?> parent) {
+
+                                                    }
+                                                });
                                             }
                                             else {
+                                                answerType.setVisibility(View.GONE);
                                                 answerVariantsList.setVisibility(View.GONE);
+                                                rightAnswers.setVisibility(View.GONE);
                                             }
                                         }
 
@@ -172,45 +200,40 @@ public class CourseCreationActivity extends AppCompatActivity {
 
                                         }
                                     });
-                                }
-                                else {
-                                    answerType.setVisibility(View.GONE);
-                                    answerVariantsList.setVisibility(View.GONE);
-                                    rightAnswers.setVisibility(View.GONE);
-                                }
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-                        LinearLayout subtitleAndTextList = keyPar.findViewById(R.id.subtitle_and_text_list);
-                        LinearLayout subtitleAndText = (LinearLayout) getLayoutInflater().inflate(R.layout.course_subtitle_and_text, null);
-                        subtitleAndTextList.addView(subtitleAndText, subtitleAndTextList.getChildCount() - 1);
-
-                        MaterialButton addButton = keyPar.findViewById(R.id.button_add_new);
-                        MaterialButton removeButton = keyPar.findViewById(R.id.button_remove);
-                        addButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (subtitleAndTextList.getChildCount() < 12) {
+                                    LinearLayout subtitleAndTextList = keyPar.findViewById(R.id.subtitle_and_text_list);
                                     LinearLayout subtitleAndText = (LinearLayout) getLayoutInflater().inflate(R.layout.course_subtitle_and_text, null);
                                     subtitleAndTextList.addView(subtitleAndText, subtitleAndTextList.getChildCount() - 1);
+
+                                    MaterialButton addButton = keyPar.findViewById(R.id.button_add_new);
+                                    MaterialButton removeButton = keyPar.findViewById(R.id.button_remove);
+                                    addButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (subtitleAndTextList.getChildCount() < 20) {
+                                                LinearLayout subtitleAndText = (LinearLayout) getLayoutInflater().inflate(R.layout.course_subtitle_and_text, null);
+                                                subtitleAndTextList.addView(subtitleAndText, subtitleAndTextList.getChildCount() - 1);
+                                            }
+                                        }
+                                    });
+                                    removeButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (subtitleAndTextList.getChildCount() > 2) subtitleAndTextList.removeViewAt(subtitleAndTextList.getChildCount() - 2);
+                                        }
+                                    });
+                                    s2.addView(keyPar);
                                 }
+                                courseCreate.setVisibility(View.VISIBLE);
+                                important.setVisibility(View.VISIBLE);
                             }
-                        });
-                        removeButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (subtitleAndTextList.getChildCount() > 2) subtitleAndTextList.removeViewAt(subtitleAndTextList.getChildCount() - 2);
-                            }
-                        });
-                        s2.addView(keyPar);
+                        }
                     }
-                    courseCreate.setVisibility(View.VISIBLE);
-                    important.setVisibility(View.VISIBLE);
-                }
+
+                    @Override
+                    public void onFailure(Call<List<CourseAdditional>> call, Throwable t) {
+
+                    }
+                });
             }
         });
 
@@ -262,9 +285,9 @@ public class CourseCreationActivity extends AppCompatActivity {
                         if (exerciseType.equals("Практика")) {
                             Spinner exerciseAnswerTypeSpinner = exercisesLayout.findViewById(R.id.spinner_exercise_answer_type);
                             String exerciseAnswerType = exerciseAnswerTypeSpinner.getSelectedItem().toString();
+                            List<String> answerVariantsList = new ArrayList<>();
                             if (exerciseAnswerType.equals("Выбор ответа")) {
                                 LinearLayout answerVariants = exercisesLayout.findViewById(R.id.answer_variants);
-                                List<String> answerVariantsList = new ArrayList<>();
                                 for (int k = 0; k < answerVariants.getChildCount() - 1; k++) {
                                     String s = ((EditText) answerVariants.getChildAt(k).findViewById(R.id.editTextAnswer)).getText().toString();
                                     if (s.equals("")) {
@@ -283,6 +306,11 @@ public class CourseCreationActivity extends AppCompatActivity {
                                 String s = ((EditText) rightAnswers.getChildAt(k).findViewById(R.id.editTextRightAnswer)).getText().toString();
                                 if (s.equals("")) {
                                     Toast.makeText(CourseCreationActivity.this, "Заполните все поля корректно!", Toast.LENGTH_SHORT).show();
+                                    isAlright = false;
+                                    break;
+                                }
+                                if (exerciseAnswerType.equals("Выбор ответа") && !answerVariantsList.contains(s)) {
+                                    Toast.makeText(CourseCreationActivity.this, "Правильный ответ должен быть в числе вариантов ответа!", Toast.LENGTH_SHORT).show();
                                     isAlright = false;
                                     break;
                                 }

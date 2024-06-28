@@ -17,11 +17,13 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.educationproject2024.R;
 import com.example.educationproject2024.Utils;
 import com.example.educationproject2024.controller.API;
+import com.example.educationproject2024.data.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,7 +70,7 @@ public class ChangeUserActivity extends AppCompatActivity {
                 String p1 = String.valueOf(password.getText());
                 String p2 = String.valueOf(confirmPassword.getText());
 
-                if (isEmailValid(e) && p1.equals(p2) && e.equals(e.toLowerCase()) && !fn.equals("") && !e.equals("") && !p1.equals("") && !p2.equals("")) {
+                if (isEmailValid(e) && p1.equals(p2) && e.equals(e.toLowerCase()) && !fn.equals("") && !e.equals("") && !p1.equals("")) {
                     Utils.user.setFullName(fn);
                     Utils.user.setEmail(e);
                     Utils.user.setPassword(p1);
@@ -78,8 +80,8 @@ public class ChangeUserActivity extends AppCompatActivity {
                     parameters.put("email", Utils.user.getEmail());
                     parameters.put("password", Utils.user.getPassword());
 
-                    Call<Void> call = api.updateAccount(APIKEY, parameters, "eq." + oldName);
-                    call.enqueue(new Callback<Void>() {
+                    Call<Void> call2 = api.updateAccount(APIKEY, parameters, "eq." + oldName);
+                    call2.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toast.makeText(ChangeUserActivity.this, "Данные успешно изменены!", Toast.LENGTH_SHORT).show();
